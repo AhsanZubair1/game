@@ -1067,7 +1067,7 @@ int i=0;
           backgroundColor: Colors.black,
           content: Container(
             height: height*0.3,
-            width: height*0.36,
+            width: width*0.36,
             decoration: BoxDecoration(
               color: Colors.black,
               borderRadius: BorderRadius.circular(25),
