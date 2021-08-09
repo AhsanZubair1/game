@@ -1,12 +1,19 @@
+
+
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:game/Constant/Colors.dart';
 import 'package:game/Interface.dart';
+import 'package:flutter_sound/flutter_sound.dart';
+import 'package:game/widget/PlayerListView.dart';
 import 'package:game/widget/fabbuttons.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'dart:math';
+import 'dart:io';
 import 'package:vector_math/vector_math.dart' show radians, Vector3;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
+//import 'package:google_fonts/google_fonts.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -34,6 +41,7 @@ class _RadialMenuState extends State<RadialMenu> with TickerProviderStateMixin {
 
   @override
   void initState() {
+
     super.initState();
     controller =
         AnimationController(duration: Duration(milliseconds: 900), vsync: this);
@@ -97,13 +105,37 @@ class _RadialAnimationState extends State<RadialAnimation> implements emptyInter
 
 
   GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+// final recorder=SoundRecoder();
+
+
+dispose(){
+  super.dispose();
+  // recorder.dispose();
+}
+late FlutterSoundRecorder _myrecoder;
+String _filepath='';
+bool play=false;
+void statit()async{
+  _filepath='/Internal shared storage/DCIM.wav';
+  _myrecoder=FlutterSoundRecorder();
+  await _myrecoder.openAudioSession(
+    focus: AudioFocus.requestFocusAndStopOthers,
+    category: SessionCategory.playAndRecord,
+    mode: SessionMode.modeDefault,
+    device: AudioDevice.speaker
+
+  );
+  await _myrecoder.setSubscriptionDuration(Duration(microseconds: 10));
+  await Permission.microphone.request();
+  await Permission.storage.request();
+  await Permission.manageExternalStorage.request();
+}
 
 
   initState(){
-    super.initState();
+     super.initState();
 
-
-
+statit();
 
     translation = Tween<double>(
       begin: 0.0,
@@ -280,11 +312,6 @@ int i=0;
   @override
   void func() {
 
-    print("mnmjhjjhjhn");
-
-     // _scaffoldKey.currentState?.openEndDrawer();
-
-
     setState(() {
 
     });
@@ -387,9 +414,9 @@ int i=0;
                 child: IconButton(
                     icon: Image.asset("assets/icons/sticker.png"),
                     enableFeedback: true,
-                    onPressed: () {
+                    onPressed: () async{
 
-
+                      //final recording=await recorder.toggleRecording();
                     }
 
                 ),
@@ -1064,13 +1091,58 @@ int i=0;
 
       builder: (context){
         return AlertDialog(
-          backgroundColor: Colors.black,
+          backgroundColor: Colors.black.withOpacity(0.9),
+          contentPadding: EdgeInsets.zero,
+          actionsPadding: EdgeInsets.zero,
+           shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(32.0,),),
+          ),
+
           content: Container(
-            height: height*0.3,
-            width: width*0.36,
+            height: height*0.95,
+            width: width*0.40,
+            padding: EdgeInsets.only(bottom: height*0.05,left: height*0.03,right: height*0.02,top: height*0.06),
+
             decoration: BoxDecoration(
-              color: Colors.black,
-              borderRadius: BorderRadius.circular(25),
+              // color: Colors.black.withOpacity(0.9),
+
+              borderRadius: BorderRadius.all(Radius.circular(32.0,),),
+              border: Border.all(color: Colorss.orange,width: 1),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text("PLAYERS LIST",style:TextStyle(color:
+                  Colorss.orange,fontSize: 15,fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: height*0.06,),
+
+                Expanded(
+                    child: ListView.builder(
+                      itemBuilder:(ctx,l)=>PlayerListView(),
+                      itemCount: 5,),),
+                SizedBox(height: height*0.03,),
+                Container(height: 1,width: width*0.3,
+                decoration: BoxDecoration(
+                  color: Colorss.orange
+                ),
+
+                ),
+                SizedBox(height: height*0.03,),
+                Container(
+                  height: height*0.10,
+                  width: width*0.2,
+                  decoration: BoxDecoration(
+                    color: Colors.blue,
+                    borderRadius: BorderRadius.circular(13),
+                  ),
+                  child: Center(child: TextButton(child:Text("Leave Game",
+                    style: TextStyle(color: Colors.white,fontSize: 12,
+                        fontWeight: FontWeight.bold)),onPressed: (){Navigator.pop(context);},)),
+                ),
+
+
+              ],
             ),
           ),
 
@@ -1081,41 +1153,6 @@ int i=0;
 }
 
 
-class CircularButton extends StatelessWidget {
-  CircularButton(
-      {required this.width,
-        required this.height,
-        required this.color,
-        required this.icon,
-        required this.onclick});
 
-  final double height;
-  final double width;
-  final Color color;
-  final Icon icon;
-  final Function onclick;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: color,
-        shape: BoxShape.circle,
-      ),
-      width: width,
-      height: height,
-      child: IconButton(
-        icon: icon,
-        enableFeedback: true,
-        onPressed: () {
-          print("bbb b");
-
-        },
-      ),
-    );
-  }
-
-
-}
 
 

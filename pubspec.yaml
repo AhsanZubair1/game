@@ -31,6 +31,13 @@ dependencies:
   vector_math: ^2.0.8
   font_awesome_flutter: ^9.1.0
   circular_countdown_timer: ^0.2.0
+  google_fonts: ^2.1.0
+  flutter_sound: ^8.3.9
+  permission_handler:
+  #assets_audio_player: ^3.0.3+6
+  #flutter_sound_lite: ^8.3.9
+
+
 
 dev_dependencies:
   flutter_test:
